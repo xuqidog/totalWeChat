@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>echart</title>
+</head>
+
+
+<body>
+
+
+
+<div id="main" style="width: 1200px;height:600px;"></div>
+<script src="/echarts.js"></script>
+<script src="/china.js"></script>
+<script src="/macarons.js"></script>
+<script>
+
+    var chart = echarts.init(document.getElementById('main'), 'macarons');
+    //这里是生成series的数据，将经纬度和value值映射起来，我根据这个方法，最后自己写了一个方法，生成同样格式的数据，实现了对value的屏蔽。
+//
+    var data = [];
+    {% for city in cityList %}
+        data.push({name: '{{ city.name }}', value: {{ city.count }}});
+    {% endfor %}
+
+    option = {
+    title : {
+        text: '微信好友分布图',
+        subtext: '数据分析统计结果',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item'
+    },
+    legend: {
+        orient: 'vertical',
+        x:'left',
+        data:['微信好友']
+    },
+    dataRange: {
+        min: 0,
+        max: 70,
+        x: 'left',
+        y: 'bottom',
+        text:['高','低'],           // 文本，默认为数值文本
+        calculable : true
+    },
+    toolbox: {
+        show: true,
+        orient : 'vertical',
+        x: 'right',
+        y: 'center',
+        feature : {
+            mark : {show: true},
+            dataView : {show: true, readOnly: false},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    roamController: {
+        show: true,
+        x: 'right',
+        mapTypeControl: {
+            'china': true
+        }
+    },
+    series : [
+        {
+            name: '微信好友',
+            type: 'map',
+            mapType: 'china',
+            roam: false,
+            itemStyle:{
+                normal:{label:{show:true}},
+                emphasis:{label:{show:true}}
+            },
+            data:data
+        }
+
+    ]
+};
+
+
+    chart.setOption(option);
+</script>
+
+</body>
+</html>
